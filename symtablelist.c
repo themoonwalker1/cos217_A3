@@ -86,7 +86,6 @@ const void *pvValue)
         return 0;
     }
 
-    // Allocate memory for the new key and copy the contents
     psNewNode->pcKey = (char*)malloc(strlen(pcKey) + 1);
     if (psNewNode->pcKey == NULL) {
         free(psNewNode);
