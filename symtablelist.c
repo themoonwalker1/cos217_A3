@@ -8,20 +8,30 @@
 
 /*--------------------------------------------------------------------*/
 
+/* Each binding in a Symtable is stored as a SymTableNode. SymTableNodes
+   are linked to each other to form a linked list structure. */
 struct SymTableNode
 {
+    /* Unique String Key */
     const char *pcKey;
 
+    /* Binding's Value */
     void *pvValue;
 
+    /* Pointed to the next SymTableNode in linked list */
     struct SymTableNode *psNextNode;
 };
 
 /*--------------------------------------------------------------------*/
 
+/* A SymTable is a structure that points to the first binding and
+   stores the number of bindings in the linked list. */
 struct SymTable
 {
+    /* Pointer to the first SymTableNode */
     struct SymTableNode *psFirstNode;
+
+    /* Number of Bindings */
     size_t symTableLength;
 };
 
