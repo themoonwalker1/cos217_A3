@@ -278,12 +278,13 @@ void SymTable_map(SymTable_T oSymTable,
 void (*pfApply)(const char *pcKey, void *pvValue, void *pvExtra),
 const void *pvExtra)
 {
+    size_t i;
     struct SymTableNode *psCurrentNode;
 
     assert(oSymTable != NULL);
     assert(pfApply != NULL);
 
-    for (int i = 0; i < oSymTable->buckets; i++)
+    for (i = (size_t)0; i < oSymTable->buckets; i++)
     {
         for (psCurrentNode = *(oSymTable->ppsFirstNode + i);
         psCurrentNode != NULL;
