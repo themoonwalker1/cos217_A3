@@ -2,6 +2,9 @@
 CC = gcc
 # CC = gcc217
 # CC = gcc217m
+CFLAGS =
+# CFLAGS = -g
+# CFLAGS = -D NDEBUG
 
 # Dependency rules for non-file targets
 all: testsymtablelist testsymtablehash

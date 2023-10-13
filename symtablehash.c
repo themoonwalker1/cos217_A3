@@ -4,6 +4,7 @@
 /*--------------------------------------------------------------------*/
 
 #include <assert.h>
+#include <stdio.h>
 #include "symtable.h"
 
 static const size_t bucket_sizes[9] =
@@ -138,7 +139,9 @@ static int SymTable_expand(SymTable_T oSymTable)
 
     assert(oSymTable != NULL);
 
-    bucket_size = (size_t *)bucket_sizes;
+    printf("zu");
+
+    bucket_size = (size_t *)&(bucket_sizes[0]);
     while (*bucket_size != oSymTable->buckets)
         bucket_size++;
 
@@ -168,9 +171,7 @@ static int SymTable_expand(SymTable_T oSymTable)
             *(ppsNewBucketArray + hash) = psTempOldNode;
             (*(ppsNewBucketArray + hash))->psNextNode = psTempNewNode;
 
-            psPrevOldNode = psTempOldNode;
             psTempOldNode = psTempOldNode->psNextNode;
-            free(psPrevOldNode);
         }
     }
 
