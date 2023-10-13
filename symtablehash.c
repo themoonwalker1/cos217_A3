@@ -6,6 +6,9 @@
 #include <assert.h>
 #include "symtable.h"
 
+static const size_t bucket_sizes[9] =
+        {509, 1021, 2039, 4093, 8191, 16381, 32749, 65521, 0};
+
 /*--------------------------------------------------------------------*/
 
 /* Each binding in a Symtable is stored as a SymTableNode. SymTableNodes
@@ -45,7 +48,6 @@ SymTable_T SymTable_new(void)
 {
     SymTable_T oSymTable;
     size_t i;
-    const size_t INITIALIZATION_BUCKETS = 509;
     struct SymTableNode **ppsFirstNode;
 
     oSymTable = (SymTable_T)malloc(sizeof(struct SymTable));
@@ -53,7 +55,7 @@ SymTable_T SymTable_new(void)
         return NULL;
 
     ppsFirstNode = (struct SymTableNode **)malloc(
-            sizeof(struct SymTableNode *) * INITIALIZATION_BUCKETS);
+            sizeof(struct SymTableNode *) * bucket_sizes[0]);
     if (ppsFirstNode == NULL)
     {
         free(oSymTable);
@@ -61,7 +63,7 @@ SymTable_T SymTable_new(void)
     }
 
     oSymTable->ppsFirstNode = ppsFirstNode;
-    oSymTable->buckets = INITIALIZATION_BUCKETS;
+    oSymTable->buckets = bucket_sizes[0];
     oSymTable->symTableLength = 0;
 
     for (i = (size_t)0; i < oSymTable->buckets; i++)
@@ -126,6 +128,61 @@ static size_t SymTable_hash(const char *pcKey, size_t uBucketCount)
 
 /*--------------------------------------------------------------------*/
 
+static int SymTable_expand(SymTable_T oSymTable)
+{
+    struct SymTableNode **ppsNewBucketArray;
+    struct SymTableNode *psTempOldNode, *psTempNewNode, *psPrevOldNode;
+    size_t *bucket_size;
+    size_t i;
+    size_t hash;
+
+    assert(oSymTable != NULL);
+
+    bucket_size = (size_t *)bucket_sizes;
+    while (*bucket_size != oSymTable->buckets)
+        bucket_size++;
+
+    bucket_size++;
+
+    if (*bucket_size == 0)
+        return 1;
+
+    ppsNewBucketArray = (struct SymTableNode **)malloc(
+            sizeof(struct SymTableNode *) * *bucket_size);
+
+    if (ppsNewBucketArray == NULL)
+        return 0;
+
+    for (i = (size_t)0; i < *bucket_size; i++)
+    {
+        *(ppsNewBucketArray + i) = NULL;
+    }
+
+    for (i = (size_t)0; i < oSymTable->buckets; i++)
+    {
+        psTempOldNode = *(oSymTable->ppsFirstNode + i);
+        while (psTempOldNode != NULL){
+            hash = SymTable_hash(psTempOldNode->pcKey, *bucket_size);
+            
+            psTempNewNode = *(ppsNewBucketArray + hash);
+            *(ppsNewBucketArray + hash) = psTempOldNode;
+            (*(ppsNewBucketArray + hash))->psNextNode = psTempNewNode;
+
+            psPrevOldNode = psTempOldNode;
+            psTempOldNode = psTempOldNode->psNextNode;
+            free(psPrevOldNode);
+        }
+    }
+
+    free(oSymTable->ppsFirstNode);
+    oSymTable->ppsFirstNode = ppsNewBucketArray;
+    oSymTable->buckets = *bucket_size;
+
+    return 1;
+}
+
+/*--------------------------------------------------------------------*/
+
 int SymTable_put(SymTable_T oSymTable, const char *pcKey,
 const void *pvValue)
 {
@@ -137,6 +194,12 @@ const void *pvValue)
 
     if (SymTable_contains(oSymTable, pcKey))
         return 0;
+
+    if (oSymTable->buckets == oSymTable->symTableLength)
+    {
+        if (!SymTable_expand(oSymTable))
+            return 0;
+    }
 
     hash = SymTable_hash(pcKey, oSymTable->buckets);
 
