@@ -46,7 +46,7 @@ SymTable_T SymTable_new(void)
     SymTable_T oSymTable;
     size_t i;
     const int INITIALIZATION_BUCKETS = 509;
-    struct SymTableNode **ppsFirstNode
+    struct SymTableNode **ppsFirstNode;
 
     oSymTable = (SymTable_T)malloc(sizeof(struct SymTable));
     if (oSymTable == NULL)
