@@ -136,7 +136,7 @@ const void *pvValue)
     if (SymTable_contains(oSymTable, pcKey))
         return 0;
 
-    size_t bucket = SymTable_hash(pcKey, oSymTable->buckets);
+    size_t hash = SymTable_hash(pcKey, oSymTable->buckets);
 
     psNewNode = (struct SymTableNode*)malloc(sizeof(struct SymTableNode));
     if (psNewNode == NULL)
@@ -152,7 +152,7 @@ const void *pvValue)
 
     psNewNode->pvValue = (void *)pvValue;
 
-    psNewNode->psNextNode = *(oSymTable->ppsFirstNode + bucket);
+    psNewNode->psNextNode = *(oSymTable->ppsFirstNode + hash);
     oSymTable->ppsFirstNode[bucket] = psNewNode;
 
     oSymTable->symTableLength++;
@@ -174,8 +174,8 @@ const void *pvValue)
     assert(pcKey != NULL);
     /* assert(pvValue != NULL); */
 
-    size_t bucket = SymTable_hash(pcKey, oSymTable->buckets);
-    psTempNode = *(oSymTable->ppsFirstNode + bucket);
+    size_t hash = SymTable_hash(pcKey, oSymTable->buckets);
+    psTempNode = *(oSymTable->ppsFirstNode + hash);
 
     while (psTempNode != NULL) {
         if (!strcmp(psTempNode->pcKey, pcKey)) {
@@ -198,8 +198,8 @@ int SymTable_contains(SymTable_T oSymTable, const char *pcKey)
     assert(oSymTable != NULL);
     assert(pcKey != NULL);
 
-    size_t bucket = SymTable_hash(pcKey, oSymTable->buckets);
-    psTempNode = *(oSymTable->ppsFirstNode + bucket);
+    size_t hash = SymTable_hash(pcKey, oSymTable->buckets);
+    psTempNode = *(oSymTable->ppsFirstNode + hash);
 
     while (psTempNode != NULL) {
         if (!strcmp(psTempNode->pcKey, pcKey)) {
@@ -220,8 +220,8 @@ void *SymTable_get(SymTable_T oSymTable, const char *pcKey)
     assert(oSymTable != NULL);
     assert(pcKey != NULL);
 
-    size_t bucket = SymTable_hash(pcKey, oSymTable->buckets);
-    psTempNode = *(oSymTable->ppsFirstNode + bucket);
+    size_t hash = SymTable_hash(pcKey, oSymTable->buckets);
+    psTempNode = *(oSymTable->ppsFirstNode + hash);
 
     while (psTempNode != NULL) {
         if (!strcmp(psTempNode->pcKey, pcKey)) {
@@ -243,8 +243,8 @@ void *SymTable_remove(SymTable_T oSymTable, const char *pcKey)
     assert(oSymTable != NULL);
     assert(pcKey != NULL);
 
-    size_t bucket = SymTable_hash(pcKey, oSymTable->buckets);
-    psTempNode = *(oSymTable->ppsFirstNode + bucket);
+    size_t hash = SymTable_hash(pcKey, oSymTable->buckets);
+    psTempNode = *(oSymTable->ppsFirstNode + hash);
 
     psPrevNode = NULL;
 
@@ -253,7 +253,7 @@ void *SymTable_remove(SymTable_T oSymTable, const char *pcKey)
             pvPrevValue = psTempNode->pvValue;
 
             if (psPrevNode == NULL) {
-                *(oSymTable->ppsFirstNode + bucket)
+                *(oSymTable->ppsFirstNode + hash)
                     = psTempNode->psNextNode;
             } else {
                 psPrevNode->psNextNode = psTempNode->psNextNode;
