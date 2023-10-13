@@ -75,9 +75,11 @@ SymTable_T SymTable_new(void)
 
 void SymTable_free(SymTable_T oSymTable)
 {
+    size_t i;
+
     assert(oSymTable != NULL);
 
-    for (size_t i = 0; i < oSymTable->buckets; i++) {
+    for (i = (size_t)0; i < oSymTable->buckets; i++) {
         struct SymTableNode *psCurrentNode = oSymTable->ppsFirstNode[i];
         struct SymTableNode *psNextNode;
 
