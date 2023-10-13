@@ -122,24 +122,25 @@ static size_t SymTable_hash(const char *pcKey, size_t uBucketCount)
    assert(pcKey != NULL);
 
    for (u = 0; pcKey[u] != '\0'; u++)
-      uHash = uHash * HASH_MULTIPLIER + (size_t)pcKey[u];
-
+       uHash = uHash * HASH_MULTIPLIER + (size_t)pcKey[u];
    return uHash % uBucketCount;
 }
 
 /*--------------------------------------------------------------------*/
 
+/* Expands oSymTable to the next number of buckets, to a maximum of
+   65521 buckets. Returns 0 for an unsuccessful expansion (oSymTable is
+   null or memory allocation failed) or Returns 1 for successful
+   expansion. Returns 0 if maximum bucket size has been reached. */
 static int SymTable_expand(SymTable_T oSymTable)
 {
     struct SymTableNode **ppsNewBucketArray;
-    struct SymTableNode *psTempOldNode, *psTempNewNode, *psPrevOldNode;
+    struct SymTableNode *psTempOldNode, *psTempNewNode, *psTempNextNode;
     size_t *bucket_size;
     size_t i;
     size_t hash;
 
     assert(oSymTable != NULL);
-
-    printf("zu");
 
     bucket_size = (size_t *)&(bucket_sizes[0]);
     while (*bucket_size != oSymTable->buckets)
@@ -166,12 +167,14 @@ static int SymTable_expand(SymTable_T oSymTable)
         psTempOldNode = *(oSymTable->ppsFirstNode + i);
         while (psTempOldNode != NULL){
             hash = SymTable_hash(psTempOldNode->pcKey, *bucket_size);
-            
+
+            psTempNextNode = psTempOldNode->psNextNode;
+
             psTempNewNode = *(ppsNewBucketArray + hash);
             *(ppsNewBucketArray + hash) = psTempOldNode;
             (*(ppsNewBucketArray + hash))->psNextNode = psTempNewNode;
 
-            psTempOldNode = psTempOldNode->psNextNode;
+            psTempOldNode = psTempNextNode;
         }
     }
 
