@@ -5,7 +5,6 @@
 
 #include <assert.h>
 #include "symtable.h"
-#define INITIALIZATION_BUCKETS 509
 
 /*--------------------------------------------------------------------*/
 
@@ -46,6 +45,7 @@ SymTable_T SymTable_new(void)
 {
     SymTable_T oSymTable;
     size_t i;
+    const int INITIALIZATION_BUCKETS = 509;
 
     oSymTable = (SymTable_T)malloc(sizeof(struct SymTable));
     if (oSymTable == NULL)
@@ -129,6 +129,7 @@ int SymTable_put(SymTable_T oSymTable, const char *pcKey,
 const void *pvValue)
 {
     struct SymTableNode *psNewNode;
+    size_t hash;
 
     assert(oSymTable != NULL);
     assert(pcKey != NULL);
@@ -136,7 +137,7 @@ const void *pvValue)
     if (SymTable_contains(oSymTable, pcKey))
         return 0;
 
-    size_t hash = SymTable_hash(pcKey, oSymTable->buckets);
+    hash = SymTable_hash(pcKey, oSymTable->buckets);
 
     psNewNode = (struct SymTableNode*)malloc(sizeof(struct SymTableNode));
     if (psNewNode == NULL)
@@ -153,7 +154,7 @@ const void *pvValue)
     psNewNode->pvValue = (void *)pvValue;
 
     psNewNode->psNextNode = *(oSymTable->ppsFirstNode + hash);
-    oSymTable->ppsFirstNode[bucket] = psNewNode;
+    *(oSymTable->ppsFirstNode + hash) = psNewNode;
 
     oSymTable->symTableLength++;
 
@@ -169,12 +170,13 @@ const void *pvValue)
 {
     struct SymTableNode *psTempNode;
     void *pvPrevValue;
+    size_t hash;
 
     assert(oSymTable != NULL);
     assert(pcKey != NULL);
     /* assert(pvValue != NULL); */
 
-    size_t hash = SymTable_hash(pcKey, oSymTable->buckets);
+    hash = SymTable_hash(pcKey, oSymTable->buckets);
     psTempNode = *(oSymTable->ppsFirstNode + hash);
 
     while (psTempNode != NULL) {
@@ -194,11 +196,12 @@ const void *pvValue)
 int SymTable_contains(SymTable_T oSymTable, const char *pcKey)
 {
     struct SymTableNode *psTempNode;
+    size_t hash;
 
     assert(oSymTable != NULL);
     assert(pcKey != NULL);
 
-    size_t hash = SymTable_hash(pcKey, oSymTable->buckets);
+    hash = SymTable_hash(pcKey, oSymTable->buckets);
     psTempNode = *(oSymTable->ppsFirstNode + hash);
 
     while (psTempNode != NULL) {
@@ -216,11 +219,12 @@ int SymTable_contains(SymTable_T oSymTable, const char *pcKey)
 void *SymTable_get(SymTable_T oSymTable, const char *pcKey)
 {
     struct SymTableNode *psTempNode;
+    size_t hash;
 
     assert(oSymTable != NULL);
     assert(pcKey != NULL);
 
-    size_t hash = SymTable_hash(pcKey, oSymTable->buckets);
+    hash = SymTable_hash(pcKey, oSymTable->buckets);
     psTempNode = *(oSymTable->ppsFirstNode + hash);
 
     while (psTempNode != NULL) {
@@ -239,11 +243,12 @@ void *SymTable_remove(SymTable_T oSymTable, const char *pcKey)
 {
     struct SymTableNode *psTempNode, *psPrevNode;
     void *pvPrevValue;
+    size_t hash;
 
     assert(oSymTable != NULL);
     assert(pcKey != NULL);
 
-    size_t hash = SymTable_hash(pcKey, oSymTable->buckets);
+    hash = SymTable_hash(pcKey, oSymTable->buckets);
     psTempNode = *(oSymTable->ppsFirstNode + hash);
 
     psPrevNode = NULL;
@@ -278,8 +283,8 @@ void SymTable_map(SymTable_T oSymTable,
 void (*pfApply)(const char *pcKey, void *pvValue, void *pvExtra),
 const void *pvExtra)
 {
-    size_t i;
     struct SymTableNode *psCurrentNode;
+    size_t i;
 
     assert(oSymTable != NULL);
     assert(pfApply != NULL);
