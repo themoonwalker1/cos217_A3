@@ -152,6 +152,9 @@ static int SymTable_expand(SymTable_T oSymTable)
         return 1;
 
     ppsNewBucketArray = (struct SymTableNode **)malloc(
+            sizeof(struct SymTableNode **));
+
+    *ppsNewBucketArray = (struct SymTableNode *)malloc(
             sizeof(struct SymTableNode *) * *bucket_size);
 
     if (ppsNewBucketArray == NULL)
