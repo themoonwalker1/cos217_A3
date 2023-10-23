@@ -91,6 +91,9 @@ Checking symtablelist.c
    symtablelist.c: line 225: medium priority:
    Do you want to validate 'pvExtra' through an assert?
 
+   /* There is no necessity to validate that pvExtra is not null as it's
+      value is not dereferenced within the map function. */
+
 ------------------------------------------------------------------------
 What warnings does splint generate on symtablehash.c, and what are your
 disagreements with them? Copy the splint warnings here, and express your
@@ -125,6 +128,9 @@ Checking symtablehash.c
 
    symtablehash.c: line 355: medium priority:
    Do you want to validate 'pvExtra' through an assert?
+
+   /* There is no necessity to validate that pvExtra is not null as it's
+      value is not dereferenced within the map function. */
 
 ------------------------------------------------------------------------
 What are the CPU times reported by testsymtable.c with binding counts
