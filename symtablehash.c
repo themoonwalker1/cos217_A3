@@ -7,6 +7,8 @@
 #include <stdio.h>
 #include "symtable.h"
 
+/* Valid bucket sizes for Hash implementation of SymTable. Ends with
+   value 0 to define the maximum bucket size (which precedes it). */
 static const size_t bucket_sizes[9] =
         {509, 1021, 2039, 4093, 8191, 16381, 32749, 65521, 0};
 
