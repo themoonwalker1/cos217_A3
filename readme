@@ -78,7 +78,7 @@ Checking symtablelist.c
    /* I disagree with this warning, as pvValue should be allowed to be
       the null value (example given by Professor Moretti is that this
       structure can be used as a set by setting the "value" equal to
-      null. */
+      null). */
 
    symtablelist.c: line 120: medium priority:
    Do you want to validate 'pvValue' through an assert?
@@ -86,7 +86,7 @@ Checking symtablelist.c
    /* I disagree with this warning, as pvValue should be allowed to be
       the null value (example given by Professor Moretti is that this
       structure can be used as a set by setting the "value" equal to
-      null. */
+      null). */
 
    symtablelist.c: line 225: medium priority:
    Do you want to validate 'pvExtra' through an assert?
@@ -105,7 +105,26 @@ disagreements with them? Copy the critTer warnings here, and express
 your disagreement after each warning. If there are no warnings, then
 write "None."
 
+Checking symtablehash.c
 
+   symtablehash.c: line 194: medium priority:
+   Do you want to validate 'pvValue' through an assert?
+
+    /* I disagree with this warning, as pvValue should be allowed to be
+      the null value (example given by Professor Moretti is that this
+      structure can be used as a set by setting the "value" equal to
+      null). */
+
+   symtablehash.c: line 240: medium priority:
+   Do you want to validate 'pvValue' through an assert?
+
+    /* I disagree with this warning, as pvValue should be allowed to be
+      the null value (example given by Professor Moretti is that this
+      structure can be used as a set by setting the "value" equal to
+      null). */
+
+   symtablehash.c: line 355: medium priority:
+   Do you want to validate 'pvExtra' through an assert?
 
 ------------------------------------------------------------------------
 What are the CPU times reported by testsymtable.c with binding counts
