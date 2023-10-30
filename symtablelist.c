@@ -18,7 +18,7 @@ struct SymTableNode
     /* Binding's Value */
     void *pvValue;
 
-    /* Pointed to the next SymTableNode in linked list */
+    /* Pointer to the next SymTableNode in linked list */
     struct SymTableNode *psNextNode;
 };
 

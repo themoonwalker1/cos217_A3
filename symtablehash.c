@@ -159,11 +159,6 @@ static int SymTable_expand(SymTable_T oSymTable)
     if (ppsNewBucketArray == NULL)
         return 0;
 
-    /* for (i = (size_t)0; i < *bucket_size; i++)
-    {
-        *(ppsNewBucketArray + i) = NULL;
-    } */
-
     for (i = (size_t)0; i < oSymTable->buckets; i++)
     {
         psTempOldNode = *(oSymTable->ppsFirstNode + i);
